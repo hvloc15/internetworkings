@@ -1,0 +1,10 @@
+media
+venv
+templates
+.env
+.idea
+*.pyc
+__pycache__
+migrations
+db.sqlite3
+
