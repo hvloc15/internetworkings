@@ -1,30 +1,6 @@
 import re
-# for m in re.finditer(r"\(\?P<[a-z]+>", "loc/api/(?P<id>[1-9]+)/kaka/(?P<id>[1-9]*)"):
-#     print(m.start())
-try:
-    a = 5/ 0
-except Exception as e:
-    print(str(e))
-print(re.fullmatch("[1-9]+","19a"))
-print("loc>fdas".find(">"))
-a= "loc>fadsf"
-print(a[4:len(a)])
-# a = "loc/api/(?P<id>[1-9]+)/kaka/(?P<id>[1-9]*)"
-# print(a.split("/"))
-# print(re.search("<[a-zA-Z]+>",a).start())
-# a = re.sub(r"\(\?P<[a-z]+>([1-9a-zA-Z\[\]]+)","a",a)
-# print(a)
-#
-# dict = {
-#     "b":1,
-#     "c":2,
-#     "a":3
-# }
-# def test(a,b,c):
-#     print(a,b,c)
-#
-# test(**dict)
-
+from urls import URL
+from exceptions import NotFoundError
 def match_url_regex(string, regex):
     start_regex_index = regex.find(">") + 1
     return re.fullmatch(regex[start_regex_index:len(regex)-1],string) is not None
@@ -50,4 +26,11 @@ def match_url(url, pattern):
 
     return params
 
-print(match_url("api/loc/123/haha/2312","api/loc/(?P<id>[0-9]+)/haha/(?P<bd>[0-9]+)"))
+
+def get_view(url):
+    for url_pattern in URL.keys():
+        if match_url(url, url_pattern) is not None:
+            return URL[url_pattern]
+
+    raise NotFoundError
+
