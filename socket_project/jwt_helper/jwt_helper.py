@@ -1,15 +1,13 @@
 from __future__ import unicode_literals
 from datetime import datetime
-import settings
+from socket_project import settings
 import jwt
-import time
+
 
 def jwt_payload_handler(user):
-
     return {
-        'user_id': user["pk"],
-        'username': user["username"],
-        'exp': datetime.utcnow() + settings.JWT_EXPIRATION_DELTA
+        **user,
+        'exp': datetime.utcnow() + settings.JWT_EXPIRATION_DELTA,
     }
 
 
@@ -38,10 +36,3 @@ def jwt_decode_handler(token):
         options=options,
         leeway=settings.JWT_LEEWAY
     )
-
-user = {"pk":1,"username":2}
-payload = jwt_payload_handler(user)
-token = jwt_encode_handler(payload)
-print(token)
-time.sleep(2)
-print(jwt_decode_handler(token))

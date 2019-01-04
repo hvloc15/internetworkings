@@ -50,3 +50,13 @@ class NotFoundError(MyException):
 
     def __str__(self):
         return self.message
+
+
+class MethodNotAllowedError(Exception):
+    message = 'Method is not allowed'
+
+    def __init__(self, method=None, detail=None):
+        self.message = detail or self.message
+
+    def __str__(self):
+        return self.message

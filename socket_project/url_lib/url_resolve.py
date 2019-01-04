@@ -1,6 +1,4 @@
 import re
-from urls import URL
-from exceptions import NotFoundError
 def match_url_regex(string, regex):
     start_regex_index = regex.find(">") + 1
     return re.fullmatch(regex[start_regex_index:len(regex)-1],string) is not None
@@ -27,10 +25,5 @@ def match_url(url, pattern):
     return params
 
 
-def get_view(url):
-    for url_pattern in URL.keys():
-        if match_url(url, url_pattern) is not None:
-            return URL[url_pattern]
 
-    raise NotFoundError
 
