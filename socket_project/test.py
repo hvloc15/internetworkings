@@ -32,7 +32,10 @@ def test(a=3,**kwargs):
     print(a,kwargs.get("b"))
 
 test(**dict)
-
+a = "user"
+b = [1,2,3]
+a,b,c = b
+print(b)
 # def match_url_regex(string, regex):
 #     start_regex_index = regex.find(">") + 1
 #     return re.fullmatch(regex[start_regex_index:len(regex)-1],string) is not None

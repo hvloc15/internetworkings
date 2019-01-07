@@ -1,5 +1,5 @@
 from socket_project.exceptions import AuthenticationFailed
-from socket_project.jwt_helper import jwt_decode_handler
+from socket_project.jwt_helper.jwt_helper import jwt_decode_handler
 
 
 class AuthPermission:
@@ -7,7 +7,7 @@ class AuthPermission:
     def validate(self, request):
         token = request.get("Authorization")
         if token is None:
-            raise AuthenticationFailed
+            raise AuthenticationFailed("No authentication header provided")
         try:
             payload = jwt_decode_handler(token)
             request["User"] = {

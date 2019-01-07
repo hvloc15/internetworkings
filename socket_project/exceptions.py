@@ -60,3 +60,33 @@ class MethodNotAllowedError(Exception):
 
     def __str__(self):
         return self.message
+
+class SignupError(MyException):
+    status_code = 409
+    message = 'Username is already registered'
+
+    def __init__(self, detail=None):
+        self.message = detail or self.message
+
+    def __str__(self):
+        return self.message
+
+class FriendshipError(MyException):
+    status_code = 404
+    message = 'User ID and Friend ID have to be different'
+
+    def __init__(self, detail=None):
+        self.message = detail or self.message
+
+    def __str__(self):
+        return self.message
+
+class BadRequest(MyException):
+    status_code = 400
+    message = 'Bad request'
+
+    def __init__(self, detail=None):
+        self.message = detail or self.message
+
+    def __str__(self):
+        return self.message

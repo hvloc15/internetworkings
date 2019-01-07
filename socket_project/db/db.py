@@ -28,9 +28,6 @@ class Db:
             result = mycursor.fetchall()
             if len(result) == 0:
                 return None
-            elif len(result) == 1:
-                return result[0]
-
             return result
         except Error as e:
             raise Error
@@ -38,12 +35,12 @@ class Db:
             mycursor.close()
             connection.close()
 
-    def insert(self, sql, params=()):
+    def execute_sql(self, sql, params=()):
         try:
             connection = self.pool.get_connection()
             mycursor = connection.cursor()
             mycursor.execute(sql, params=params)
-            mycursor.commit()
+            connection.commit()
         except Error as error:
             raise Error
         finally:

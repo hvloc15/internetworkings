@@ -19,13 +19,3 @@ JWT_ALGORITHM = "HS256"
 JWT_VERIFY_EXPIRATION = True
 JWT_VERIFY = True
 JWT_LEEWAY = 0
-
-# message = {
-#     "METHOD": "GET/POST",
-#     "URL": "API/url",
-#     "AUTHORIZATION"
-#     "DATA":{
-#         "a": 1,
-#         "b": 2
-#     }
-# }

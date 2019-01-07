@@ -23,18 +23,19 @@ class Server:
                 self.client_connection[address] = connection
                 threading.Thread(target=self.handle_client, args=(connection, address,)).start()
 
-    def get_view(self, url):
+    def get_view(self, request):
         for url_pattern in urls.URL.keys():
-            if match_url(url, url_pattern) is not None:
-                return urls.URL[url_pattern]
-
-        raise NotFoundError
+            params =  match_url(request, url_pattern)
+            if params is not None:
+                return urls.URL[url_pattern], params
+        raise NotFoundError("URL Not found")
 
     def handle_client(self, connection, address):
         request = json.loads(connection.recv(8192).decode())
         try:
-            view_func = self.get_view(request.get("URL"))
-            message = view_func(request)
+            print(request["URL"])
+            view_func, params = self.get_view(request)
+            message = view_func(request, **params)
         except MyException as e:
             message = JsonResponse(e.status_code, e.message).as_json(error_message=True)
         except Exception as e:

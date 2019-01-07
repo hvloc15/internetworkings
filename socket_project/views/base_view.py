@@ -20,11 +20,11 @@ class BaseView(object):
         return view_func
 
     def dispatch(self, request, *args, **kwargs):
-        if request["METHOD"].lower() in self.method_names:
-            handler = getattr(self, request["METHOD"].lower(), self.method_not_allowed)
+        if request["Method"].lower() in self.method_names:
+            handler = getattr(self, request["Method"].lower(), self.method_not_allowed)
         else:
             handler = self.method_not_allowed
         return handler(request, *args, **kwargs)
 
     def method_not_allowed(self, request, *args, **kwargs):
-        raise MethodNotAllowedError(method=request["METHOD"])
+        raise MethodNotAllowedError(method=request["Method"])
