@@ -11,6 +11,15 @@ def login(username, password):
     result = settings.db_instance.query(sql, (username, password))[0]
     return annotate( result, ("id", "username")) if result is not None else None
 
+
+def update_online_state(id):
+    sql = """UPDATE user
+             SET isonline=1
+             WHERE id = %s
+               """
+    settings.db_instance.execute_sql(sql,(id,))
+
+
 def signup(username, password, date_of_birth):
 
     sql = """INSERT INTO user (username, password, dateofbirth)

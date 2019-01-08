@@ -5,7 +5,6 @@ from mysql.connector import pooling
 class Db:
     def __init__(self, **kwargs):
         self.pool = self.create_connection_pool(kwargs)
-        print("HUHUHU")
 
     def create_connection_pool(self, dbconfig, pool_size=20, pool_name="mypool"):
         """ Connect to MySQL database """
@@ -30,7 +29,7 @@ class Db:
                 return None
             return result
         except Error as e:
-            raise Error
+                    raise Error
         finally:
             mycursor.close()
             connection.close()

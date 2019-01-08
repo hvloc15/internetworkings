@@ -22,7 +22,7 @@ client_socket.connect((HOST, PORT))
 #     client_socket.sendall(json.dumps(input_string).encode())
 # def handle_input(client_socket):
 #     input_string = {
-#         "METHOD": "POST",
+#         "Method": "POST",
 #         "URL": "users/signup",
 #         "DATA":{
 #             "username":"admin13",
@@ -48,11 +48,12 @@ def get_user():
         "Authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ2aW5obG9jIiwiZXhwIjoxNTQ2OTUwOTMzfQ.p9tgcAHt5F8Mm_16lLLf8hQArKyZ2U9f2cei10OkrQw",
         "URL": "users/1",
     }
-def get_friend():
+
+def get_friend(token):
     return {
         "Method": "GET",
-        "Authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ2aW5obG9jIiwiZXhwIjoxNTQ2OTUwOTMzfQ.p9tgcAHt5F8Mm_16lLLf8hQArKyZ2U9f2cei10OkrQw",
-        "URL": "friends",
+        "Authorization": token,
+        "URL": "friend?isonline=0",
     }
 
 def add_friend():
@@ -74,11 +75,35 @@ def accept_friend():
             "id": "1",
         }
     }
+def cancle_friend():
+    return {
+        "Method": "POST",
+        "Authorization":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ2aW5obG9jIiwiZXhwIjoxNTQ2OTUwOTMzfQ.p9tgcAHt5F8Mm_16lLLf8hQArKyZ2U9f2cei10OkrQw",
+        "URL": "friend/cancle",
+        "DATA": {
+            "id": "2",
+        }
+    }
+
+def add_blog():
+    return {
+        "Method": "POST",
+        "Authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ2aW5obG9jIiwiZXhwIjoxNTQ2OTUwOTMzfQ.p9tgcAHt5F8Mm_16lLLf8hQArKyZ2U9f2cei10OkrQw",
+        "URL": "blog/create",
+        "DATA": {
+            "content": "Tinh nhu giac mong tan 4",
+            "date": 1234567890
+        }
+    }
+id1_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ2aW5obG9jIiwiZXhwIjoxNTQ3MDA4NDg1fQ._4AmjmDOWw3mw7oeoxfbzDfcJ61LZ1YtymBNmzq-K6U"
+id2_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ2aW5obG9jMSIsImV4cCI6MTU0NzAwODQyNn0.bFRCNzeeNdbPo_yX35OwAeJGdjXvzZIvV5IALOcHiJ0"
 
 def handle_input(client_socket):
-    #input = login("vinhloc1","123456789")
+    input = login("vinhloc2","123456789")
     #input = add_friend()
-    input = accept_friend()
+    #input = accept_friend()
+    #input = add_blog()
+    #input= get_friend(id1_token)
     client_socket.sendall(json.dumps(input).encode())
 
 

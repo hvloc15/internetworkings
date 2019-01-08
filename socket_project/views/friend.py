@@ -5,13 +5,13 @@ from socket_project.json_response import JsonResponse
 from socket_project.permissions.auth_permission import AuthPermission
 from socket_project.exceptions import BadRequest
 
+
 class Friend(BaseView):
     permission_classes = (AuthPermission, )
 
     def get(self, request, friendid = None):
-        id = request["User"]["id"]
         if friendid is None:
-            user = get_list_friend_service(id)
+            user = get_list_friend_service(request)
             return JsonResponse(200, user).as_json()
 
     def post(self, request):

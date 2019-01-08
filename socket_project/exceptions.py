@@ -90,3 +90,14 @@ class BadRequest(MyException):
 
     def __str__(self):
         return self.message
+
+
+class UnprocessableError(MyException):
+    status_code = 422
+    message = 'Unable to create a new blog'
+
+    def __init__(self, detail=None):
+        self.message = detail or self.message
+
+    def __str__(self):
+        return self.message
