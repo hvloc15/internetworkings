@@ -63,6 +63,7 @@ class WebSocketHelper(object):
     def __init__(self, sock, address):
         self.client = sock
         self.address = address
+        self.username = None
 
         self.handshaked = False
         self.headerbuffer = bytearray()

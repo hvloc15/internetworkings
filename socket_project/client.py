@@ -53,7 +53,7 @@ def get_friend(token):
     return {
         "Method": "GET",
         "Authorization": token,
-        "URL": "friend?isonline=0",
+        "URL": "friend",
     }
 
 def add_friend():

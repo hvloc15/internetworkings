@@ -29,7 +29,7 @@ class Db:
                 return None
             return result
         except Error as e:
-                    raise Error
+            raise Error
         finally:
             mycursor.close()
             connection.close()
@@ -45,3 +45,22 @@ class Db:
         finally:
             mycursor.close()
             connection.close()
+
+    def run_queries(self, cursor, queries, list_params):
+        for iterator in enumerate(queries):
+            cursor.execute(iterator[1], params=list_params[iterator[0]])
+
+    def transaction(self, queries, list_params):
+        connection = self.pool.get_connection()
+        try:
+            cursor = connection.cursor()
+            self.run_queries(cursor, queries, list_params)
+            cursor.close()
+            connection.commit()
+        except Error as e:
+            try:  # empty exception handler in case rollback fails
+                connection.rollback()
+            except:
+                pass
+            finally:
+                raise e

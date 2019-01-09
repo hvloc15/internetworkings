@@ -10,4 +10,4 @@ class User(BaseView):
     def get(self, request, id = None):
         if id is not None:
             user = get_user_service(id)
-            return JsonResponse(200, user).as_json()
+            return JsonResponse(200, user, request).as_json()

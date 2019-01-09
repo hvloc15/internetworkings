@@ -15,4 +15,4 @@ class AuthPermission:
                 "username": payload.get("username")
             }
         except Exception as e:
-            raise AuthenticationFailed(str(e))
+            raise AuthenticationFailed("Invalid authorization header format")

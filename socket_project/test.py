@@ -18,24 +18,7 @@
 # a = re.sub(r"\(\?P<[a-z]+>([1-9a-zA-Z\[\]]+)","a",a)
 # print(a)
 #
-temp = {
-    "loc":2
-}
-dict = {
-    **temp,
-    "b":1,
-    "c":2,
-    "a":30
-}
-print(dict)
-def test(a=3,**kwargs):
-    print(a,kwargs.get("b"))
 
-test(**dict)
-a = "user"
-b = [1,2,3]
-a,b,c = b
-print(b)
 # def match_url_regex(string, regex):
 #     start_regex_index = regex.find(">") + 1
 #     return re.fullmatch(regex[start_regex_index:len(regex)-1],string) is not None
@@ -62,3 +45,9 @@ print(b)
 #     return params
 #
 # print(match_url("api/loc/123/haha/2312","api/loc/(?P<id>[0-9]+)/haha/(?P<bd>[0-9]+)"))
+
+a = [{3}, {4}, {5}]
+b= [{3}]
+for i in a:
+    if i not in b:
+        print(i)

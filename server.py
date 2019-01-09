@@ -11,6 +11,7 @@ import re
 from base64 import b64encode
 from hashlib import sha1
 from socket_project.websocket import websocket_helper
+from socket_project.cache import cache
 
 
 class MySocket(websocket_helper.WebSocketHelper):
@@ -27,6 +28,7 @@ class MySocket(websocket_helper.WebSocketHelper):
         try:
             print(request["URL"])
             view_func, params = self.get_view(request)
+            params['client'] = self
             message = view_func(request, **params)
         except MyException as e:
             message = JsonResponse(e.status_code, e.message).as_json(error_message=True)
@@ -34,6 +36,9 @@ class MySocket(websocket_helper.WebSocketHelper):
             message = JsonResponse(400, str(e)).as_json(error_message=True)
 
         self.sendMessage(message)
+
+    def handleClose(self):
+        cache.delete(self.username)
 
 class Server:
     def __init__(self, host, port, number_of_connection):
@@ -44,6 +49,12 @@ class Server:
 
     def _handleClose(self, client):
         client.client.close()
+        if client.handshaked:
+            try:
+                client.handleClose()
+            except:
+                pass
+
 
     def handle_handshake(self, connection):
         text = connection.recv(1024).decode()
@@ -56,10 +67,12 @@ class Server:
         connection.send(response.encode('ascii'))
 
     def accept_connection(self):
+        print("start")
         while True:
             connection = None
             try:
                 connection, address = self.server_socket.accept()
+                print(connection)
                 client = MySocket(connection, address)
                 self.handle_handshake(connection)
                 threading.Thread(target=self.handle_client, args=(client,)).start()
@@ -69,12 +82,14 @@ class Server:
                     connection.close()
 
     def handle_client(self, client):
-        try:
-            client.handshaked = True
-            client._handleData()
-            self.send_message(client)
-        except Exception as n:
-            self._handleClose(client)
+        while True:
+            try:
+                client.handshaked = True
+                client._handleData()
+                self.send_message(client)
+            except Exception as n:
+                self._handleClose(client)
+                return
 
 
     def send_message(self, client):
@@ -117,6 +132,8 @@ class Server:
         lock.acquire()
         del self.client_connection[address]
         lock.release()
+
+
 
 server = Server(settings.HOST, settings.PORT, settings.NUMBER_OF_CONNECTION)
 server.accept_connection()

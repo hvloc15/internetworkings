@@ -15,5 +15,5 @@ class Blog(BaseView):
 
         create_blog_service(userid, content, date)
 
-        return JsonResponse(200, "Success").as_json()
+        return JsonResponse(200, "Success", request).as_json()
     

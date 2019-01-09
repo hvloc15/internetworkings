@@ -8,8 +8,8 @@ def login(username, password):
              WHERE username = %s and password = %s
             """
     #result = settings.db_instance.query(sql, (username, hashlib.md5(password).hexdigest()))
-    result = settings.db_instance.query(sql, (username, password))[0]
-    return annotate( result, ("id", "username")) if result is not None else None
+    result = settings.db_instance.query(sql, (username, password))
+    return annotate( result[0], ("id", "username")) if result is not None else None
 
 
 def update_online_state(id):
