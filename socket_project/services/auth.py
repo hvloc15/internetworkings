@@ -1,4 +1,4 @@
-from socket_project.dao.auth_dao import login, signup, update_online_state
+from socket_project.dao.auth_dao import login, signup, update_online_state, logout
 from socket_project.dao.friend_dao import get_list_friend_username
 from socket_project.exceptions import AuthenticationFailed, SignupError
 from socket_project.jwt_helper.jwt_helper import jwt_encode_handler, jwt_payload_handler
@@ -17,14 +17,16 @@ def login_service(username, password, client):
         raise AuthenticationFailed
 
     update_online_state(user["id"])
+    user["isOnline"] = 1
+
     cache.set(username, client)
     client.username = username
-    notify_friend(get_list_friend_username(username=username))
+    notify_friend(get_list_friend_username(id=user["id"]))
 
     payload = jwt_payload_handler(user)
     token = jwt_encode_handler(payload)
 
-    return token
+    return token, user
 
 def notify_friend(list_friend):
     for friend in list_friend:
@@ -38,3 +40,6 @@ def signup_service(username, password, date_of_birth):
         return signup(username,password, date_of_birth)
     except Exception as e:
         raise SignupError
+
+def logout_service(username):
+    logout(username)

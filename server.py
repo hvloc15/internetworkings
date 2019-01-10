@@ -12,6 +12,7 @@ from base64 import b64encode
 from hashlib import sha1
 from socket_project.websocket import websocket_helper
 from socket_project.cache import cache
+from socket_project.dao.auth_dao import logout
 
 
 class MySocket(websocket_helper.WebSocketHelper):
@@ -38,7 +39,9 @@ class MySocket(websocket_helper.WebSocketHelper):
         self.sendMessage(message)
 
     def handleClose(self):
+        logout(self.username)
         cache.delete(self.username)
+
 
 class Server:
     def __init__(self, host, port, number_of_connection):

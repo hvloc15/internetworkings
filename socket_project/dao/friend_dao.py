@@ -21,27 +21,28 @@ def get_list_friend(id, isonline = None, isrequested=None):
     return [annotate(record, ("id", "username", "date_of_birth", "avatar")) for record in result]
 
 def get_list_requested_friend(id):
-    sql = """SELECT user.username, user.avatar
+    sql = """SELECT user.id, user.username, user.dateofbirth, user.avatar, user.isonline, friendship.status
              FROM friendship join user on (friendship.friendid = user.id)
-             WHERE friendship.userid = %s and friendship.status = 'inactive'
+             WHERE friendship.userid = %s and (friendship.status = 'request' or friendship.status = 'accept')
             """
     params = (id,)
     query_result = settings.db_instance.query(sql, params)
     inactive_user = []
     if query_result is not None:
-        inactive_user = [annotate(record, ("username","avatar")) for record in query_result]
+        inactive_user = [annotate(record, ("id","username","date_of_birth","avatar", "isOnline", "status")) for record in query_result]
     print("Inactive: "+ str(inactive_user))
     return inactive_user
 
+
 def get_list_stranger(id):
-    sql = """SELECT user.username, user.avatar FROM user 
+    sql = """SELECT id, username, dateofbirth, avatar, isonline FROM user 
              WHERE user.id != %s AND NOT EXISTS(SELECT * FROM friendship WHERE userid= %s AND friendid= user.id)
             """
     params = (id,id)
     query_result = settings.db_instance.query(sql, params)
     if query_result is None:
         return []
-    result = [annotate(record, ("username", "avatar")) for record in query_result]
+    result = [annotate(record, ("id","username","date_of_birth","avatar", "isOnline")) for record in query_result]
     print("Strange: " +str(result))
     return result
 
@@ -51,7 +52,7 @@ def get_list_friend_username(id=None, username=None):
         if id is None:
             return []
 
-    sql = """SELECT user.username, user.isonline
+    sql = """SELECT user.id, user.username, user.dateofbirth, user.avatar, user.isonline
              FROM friendship join user on (friendship.friendid = user.id)
              WHERE friendship.userid = %s and friendship.status = 'active'
             """
@@ -61,12 +62,11 @@ def get_list_friend_username(id=None, username=None):
     if records is None:
         return result
 
-    result = [annotate(record, ("username", "isOnline")) for record in records]
+    result = [annotate(record, ("id","username","date_of_birth", "avatar","isOnline")) for record in records]
     print("Friend: "+ str(result))
     return result
 
-def accept_friend(userid, username):
-    friendid = get_user_id(username)
+def accept_friend(userid, friendid):
 
     sql = """UPDATE friendship
              SET status='active'
@@ -75,19 +75,17 @@ def accept_friend(userid, username):
     settings.db_instance.execute_sql(sql,(userid, friendid, friendid, userid))
 
 
-def add_friend(userid, username):
-    friendid = get_user_id(username)
+def add_friend(userid, friendid):
 
     sql = """INSERT INTO friendship (userid, friendid, status)
              VALUES (%s,%s,%s)
                """
     queries = [sql,sql]
-    params = [(userid, friendid,'inactive'), (friendid, userid,'inactive')]
+    params = [(userid, friendid,'request'), (friendid, userid,'accept')]
     settings.db_instance.transaction(queries, params)
 
 
-def cancle_friend_request(userid, username):
-    friendid = get_user_id(username)
+def cancle_friend_request(userid, friendid):
 
     sql = """DELETE FROM friendship
              WHERE ((userid=%s and friendid=%s) or (userid=%s and friendid=%s))and status = 'inactive'

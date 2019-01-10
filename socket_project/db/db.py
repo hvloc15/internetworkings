@@ -29,7 +29,7 @@ class Db:
                 return None
             return result
         except Error as e:
-            raise Error
+            raise Exception(str(e))
         finally:
             mycursor.close()
             connection.close()

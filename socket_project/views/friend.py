@@ -4,7 +4,6 @@ from socket_project.services.friend import get_list_friend_service, \
 from socket_project.json_response import JsonResponse
 from socket_project.permissions.auth_permission import AuthPermission
 from socket_project.exceptions import BadRequest
-from socket_project.utils.utils import ignore_client
 
 
 class Friend(BaseView):
@@ -19,18 +18,18 @@ class Friend(BaseView):
         function_name = request["URL"].split('/')[1]
         func = getattr(self,function_name)
         try:
-            friend_username = request["DATA"]["username"]
-            return func(request, friend_username)
+            friend_id = request["DATA"]["id"]
+            return func(request, friend_id)
 
         except:
             raise BadRequest("Invalid body format")
 
-    def accept(self, request, friend_username, client= None):
-        user = accept_friend_service(request["User"]["id"], friend_username)
+    def accept(self, request, friend_id, client= None):
+        user = accept_friend_service(request["User"]["id"], friend_id)
         return JsonResponse(200, user, request).as_json()
 
     def add(self, request, friend_username, client= None):
-        user = add_friend_service(request["User"]["id"], friend_username)
+        user = add_friend_service(request, friend_username)
         return JsonResponse(200, user, request).as_json()
 
     def cancle(self, request, friend_username, client= None):

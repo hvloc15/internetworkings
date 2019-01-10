@@ -1,7 +1,6 @@
 from socket_project.views.base_view import BaseView
-from socket_project.services.auth import login_service, signup_service
+from socket_project.services.auth import login_service, signup_service, logout_service
 from socket_project.json_response import JsonResponse
-import settings
 
 
 class Auth(BaseView):
@@ -16,9 +15,14 @@ class Auth(BaseView):
         username = body["username"]
         password = body["password"]
 
-        token = login_service(username, password, client)
+        token, user = login_service(username, password, client)
 
-        return JsonResponse(200, token, request).as_json()
+        return JsonResponse(200, {"token": token, "user": user}, request).as_json()
+
+    def logout(self, request, client):
+        body = request["DATA"]
+        username = body["username"]
+        logout_service(username)
 
     def signup(self, request):
         body = request["DATA"]
