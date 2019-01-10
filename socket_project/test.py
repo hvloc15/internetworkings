@@ -46,8 +46,7 @@
 #
 # print(match_url("api/loc/123/haha/2312","api/loc/(?P<id>[0-9]+)/haha/(?P<bd>[0-9]+)"))
 
-a = [{3}, {4}, {5}]
-b= [{3}]
-for i in a:
-    if i not in b:
-        print(i)
+
+
+a = "32"
+print(int(a) + 10)

@@ -6,8 +6,8 @@ from socket_project.cache import cache
 
 
 def login_service(username, password, client):
-    if cache.get(username) is not None:
-        raise AuthenticationFailed("Already login")
+    # if cache.get(username) is not None:
+    #     raise AuthenticationFailed("Already login")
 
     if username == '' or password == '':
         raise AuthenticationFailed

@@ -9,10 +9,10 @@ def count_number_of_message(id):
     return result[0][0]
 
 
-def get_list_message(id, friend_id, page, page_size=20):
+def get_list_message(id, friend_id, page, page_size):
 
-    offset = page * page_size
-    limit = page_size
+    offset = int(page) * int(page_size)
+    limit = int(page_size)
 
     sql = """SELECT senderid, receiverid, content, date from message 
              WHERE (senderid =%s and receiverid= %s) or (senderid =%s and receiverid = %s)
@@ -24,6 +24,7 @@ def get_list_message(id, friend_id, page, page_size=20):
         return []
 
     result = [annotate(record, ("senderid", "receiverid", "content", "date")) for record in records]
+    print("Message: ", result)
     return result
 
 
