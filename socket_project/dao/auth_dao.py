@@ -30,9 +30,9 @@ def signup(username, password, date_of_birth):
     return True
 
 
-def logout(username):
+def logout(id):
 
-    sql = """UPDATE user SET isonline=0 WHERE username=%s"""
+    sql = """UPDATE user SET isonline=0 WHERE id=%s"""
     #result = settings.db_instance.query(sql, (username, hashlib.md5(password).hexdigest()))
-    result = settings.db_instance.query(sql, (username,))
+    settings.db_instance.execute_sql(sql, (id,))
 

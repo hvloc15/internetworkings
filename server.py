@@ -12,7 +12,7 @@ from base64 import b64encode
 from hashlib import sha1
 from socket_project.websocket import websocket_helper
 from socket_project.cache import cache
-from socket_project.dao.auth_dao import logout
+from socket_project.services.auth import logout_service
 
 
 class MySocket(websocket_helper.WebSocketHelper):
@@ -39,8 +39,35 @@ class MySocket(websocket_helper.WebSocketHelper):
         self.sendMessage(message)
 
     def handleClose(self):
-        logout(self.username)
+        logout_service(self.id)
         cache.delete(self.username)
+
+    def send_message(self,):
+        try:
+            while self.sendq:
+                opcode, payload = self.sendq.popleft()
+                remaining = self._sendBuffer(payload)
+                if remaining is not None:
+                    self.sendq.appendleft((opcode, remaining))
+                    break
+                else:
+                    if opcode == websocket_helper.CLOSE:
+                        raise Exception('received client close')
+
+        except Exception as n:
+            self.myhandleClose()
+
+    def my_send_message(self, message):
+        self.sendMessage(message)
+        self.send_message()
+
+    def myhandleClose(self):
+        self.client.close()
+        if self.handshaked:
+            try:
+                self.handleClose()
+            except:
+                pass
 
 
 class Server:
@@ -49,15 +76,6 @@ class Server:
         self.server_socket.bind((host, port))
         self.server_socket.listen(number_of_connection)
         self.client_connection = {}
-
-    def _handleClose(self, client):
-        client.client.close()
-        if client.handshaked:
-            try:
-                client.handleClose()
-            except:
-                pass
-
 
     def handle_handshake(self, connection):
         text = connection.recv(1024).decode()
@@ -89,26 +107,12 @@ class Server:
             try:
                 client.handshaked = True
                 client._handleData()
-                self.send_message(client)
+                client.send_message()
+
             except Exception as n:
-                self._handleClose(client)
+                print("Socket close")
+                client.myhandleClose()
                 return
-
-
-    def send_message(self, client):
-        try:
-            while client.sendq:
-                opcode, payload = client.sendq.popleft()
-                remaining = client._sendBuffer(payload)
-                if remaining is not None:
-                    client.sendq.appendleft((opcode, remaining))
-                    break
-                else:
-                    if opcode == websocket_helper.CLOSE:
-                        raise Exception('received client close')
-
-        except Exception as n:
-            self._handleClose(client)
 
     #
     # def handle_client(self, connection, address):

@@ -66,6 +66,17 @@ def get_list_friend_username(id=None, username=None):
     print("Friend: "+ str(result))
     return result
 
+def get_list_friend_by_id(id):
+    sql = """SELECT user.id
+                FROM friendship join user on (friendship.friendid = user.id)
+                WHERE friendship.userid = %s and friendship.status = 'active'
+               """
+
+    records = settings.db_instance.query(sql, (id,))
+    if records is None:
+        return []
+    return [record[0] for record in records]
+
 def accept_friend(userid, friendid):
 
     sql = """UPDATE friendship
@@ -95,3 +106,4 @@ def cancle_friend_request(userid, friendid):
 #add_friend(userid=1, friendid=5)
 #cancle_friend_request(userid=1, friendid=5)
 #print(get_list_friend_username("vinhloc"))
+#print(get_list_friend_by_id(2))

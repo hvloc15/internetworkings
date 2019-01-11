@@ -64,7 +64,7 @@ class WebSocketHelper(object):
         self.client = sock
         self.address = address
         self.username = None
-
+        self.id = None
         self.handshaked = False
         self.headerbuffer = bytearray()
         self.headertoread = 2048
@@ -221,39 +221,12 @@ class WebSocketHelper(object):
 
                 self.handleMessage()
 
-    def _handleData(self):
-        # do the HTTP header and websocket
-        if self.handshaked is False:
-            data = self.client.recv(self.headertoread)
-            if not data:
-                raise Exception('remote socket closed')
-            else:
-                # accumulate
-                self.headerbuffer.extend(data)
-                if len(self.headerbuffer) >= self.maxheader:
-                    raise Exception('header exceeded allowable size')
-
-                if b'\r\n\r\n' in self.headerbuffer:
-                    self.request = HTTPRequest(self.headerbuffer)
-
-                # websocket rfc 6455
-                try:
-                    key = self.request.headers['Sec-WebSocket-Key']
-                    k = key.encode('ascii') + GUID_STR.encode('ascii')
-                    k_s = base64.b64encode(hashlib.sha1(k).digest()).decode('ascii')
-                    hStr = HANDSHAKE_STR % {'acceptstr': k_s}
-                    self.sendq.append((BINARY, hStr.encode('ascii')))
-                    self.handshaked = True
-                    self.handleConnected()
-                except Exception as e:
-                    raise Exception('websocket failed: %s', str(e))
-        else:
-            # else do normal data
-            data = self.client.recv(16384)
-            if not data:
-                raise Exception("remote socket closed")
-            for d in data:
-                self._parseMessage(d)
+    def _handleData(self, data = None):
+        data = self.client.recv(16384)
+        if not data:
+            raise Exception("remote socket closed")
+        for d in data:
+            self._parseMessage(d)
 
     def close(self, status=1000, reason=u''):
         """

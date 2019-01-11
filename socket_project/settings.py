@@ -2,7 +2,7 @@ import datetime
 
 SECRET_KEY = 'u4t!0=7ujtj5e$#g&t%swpbp!q#7y70f%(rz$+79%0o%ta$gow'
 
-HOST = "192.168.1.18"
+HOST = "192.168.1.11"
 PORT = 65432
 NUMBER_OF_CONNECTION = 5
 

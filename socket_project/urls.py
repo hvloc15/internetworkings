@@ -19,6 +19,7 @@ URL = {
 "friend/cancle" : Friend.as_view(),
 
 "blog/create": Blog.as_view(),
+"blog/get": Blog.as_view(),
 
 "chat/(?P<friendid>[0-9]+)" : Chat.as_view(),
 "chat/istyping" : Chat.as_view(),

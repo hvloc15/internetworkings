@@ -25,10 +25,11 @@ class Chat(BaseView):
     def istyping(self, request):
         body = request["DATA"]
         friend_username = body["username"]
+        type = body["type"]
 
-        notify_typing_service(request, friend_username)
-        return JsonResponse(200, "notified", request)
+        notify_typing_service(request, friend_username, type)
+        return JsonResponse(200, "notified", request).as_json()
 
     def send(self, request):
         send_message_service(request)
-        return JsonResponse(200, "created", request)
+        return JsonResponse(200, "created", request).as_json()

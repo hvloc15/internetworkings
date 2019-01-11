@@ -20,9 +20,7 @@ class Auth(BaseView):
         return JsonResponse(200, {"token": token, "user": user}, request).as_json()
 
     def logout(self, request, client):
-        body = request["DATA"]
-        username = body["username"]
-        logout_service(username)
+        logout_service(request["User"]["id"])
 
     def signup(self, request):
         body = request["DATA"]
