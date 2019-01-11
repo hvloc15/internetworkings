@@ -39,7 +39,6 @@ class MySocket(websocket_helper.WebSocketHelper):
         self.sendMessage(message)
 
     def handleClose(self):
-        logout_service(self.id)
         cache.delete(self.username)
 
     def send_message(self,):
@@ -93,7 +92,7 @@ class Server:
             connection = None
             try:
                 connection, address = self.server_socket.accept()
-                print(connection)
+                print("start: ", address)
                 client = MySocket(connection, address)
                 self.handle_handshake(connection)
                 threading.Thread(target=self.handle_client, args=(client,)).start()
@@ -108,9 +107,8 @@ class Server:
                 client.handshaked = True
                 client._handleData()
                 client.send_message()
-
             except Exception as n:
-                print("Socket close")
+                print("Close: ", client.address)
                 client.myhandleClose()
                 return
 

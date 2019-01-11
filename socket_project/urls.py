@@ -11,7 +11,9 @@ URL = {
 
 "users/login" : Auth.as_view(),
 "users/signup" : Auth.as_view(),
+
 "users/(?P<id>[0-9]+)" : User.as_view(),
+"users/logout" : User.as_view(),
 
 "friend" : Friend.as_view(),
 "friend/add" : Friend.as_view(),
